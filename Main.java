@@ -139,8 +139,8 @@ public class Main extends JFrame {
                 String task = linkedList.get(index);
 
                 // Para hindi maulit ang [Completed] sa task
-                if (!task.startsWith("[Completed] ")) {
-                    String completedTask = "[Completed] " + task;
+                if (!task.endsWith(" (Completed)")) {
+                    String completedTask = task + " (Completed)";
 
                     // I-update ang task sa backend LinkedList
                     linkedList.set(index, completedTask);
@@ -148,6 +148,13 @@ public class Main extends JFrame {
                     // I-update ang task sa GUI listahan
                     listModel.set(index, completedTask);
                 }
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Please select a task first!",
+                    "No Task Selected",
+                    JOptionPane.WARNING_MESSAGE
+                );
             }
         });
 
@@ -171,13 +178,6 @@ public class Main extends JFrame {
 
             // Ipapakita ang application window
             window.setVisible(true);
-
-            JOptionPane.showMessageDialog(
-                window,
-                "Special Offer: Complete your tasks today!",
-                "Special Offer",
-                JOptionPane.INFORMATION_MESSAGE
-            );
         });
     }
 }
