@@ -4,6 +4,7 @@ package lab2practice;
 import java.util.LinkedList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 import javax.swing.*;
 
 public class Main extends JFrame implements ActionListener {
@@ -35,6 +36,7 @@ public class Main extends JFrame implements ActionListener {
         // Dito ina-adjust ang position at size ng input field
         // setBounds(x, y, width, height)
         txtInput.setBounds(50, 50, 400, 30);
+        txtInput.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         add(txtInput);
 
         // Frontend list model
@@ -47,6 +49,10 @@ public class Main extends JFrame implements ActionListener {
 
         // JList
         listTask = new JList<>(listModel);
+        listTask.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        listTask.setSelectionMode(
+            ListSelectionModel.SINGLE_SELECTION
+        );
 
         // SCROLL PANE
         scrollPane = new JScrollPane(listTask);
@@ -66,7 +72,7 @@ public class Main extends JFrame implements ActionListener {
         // Mas mababang x = mas pakaliwa
         // Mas mataas na y = mas pababa
         // Mas mababang y = mas pataas
-        // ==========================================
+       
 
         // ADD BUTTON
         btnAdd = new JButton("Add");
@@ -130,6 +136,13 @@ public class Main extends JFrame implements ActionListener {
 
                 // Lilinisin ang input field pagkatapos mag-add
                 txtInput.setText("");
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Enter task first before adding",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
         }
 
@@ -144,6 +157,13 @@ public class Main extends JFrame implements ActionListener {
 
                 // Tatanggalin din sa GUI listahan
                 listModel.remove(index);
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Select task first before removing",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
         }
 
@@ -164,6 +184,9 @@ public class Main extends JFrame implements ActionListener {
                     // I-update ang task sa GUI listahan
                     listModel.set(index, completedTask);
                 }
+
+                listTask.clearSelection();
+
             } else {
                 JOptionPane.showMessageDialog(
                     this,
@@ -191,6 +214,7 @@ public class Main extends JFrame implements ActionListener {
             Main window = new Main();
 
             // Ipapakita ang application window
+            window.setLocationRelativeTo(null);
             window.setVisible(true);
         });
     }
