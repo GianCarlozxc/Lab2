@@ -1,229 +1,148 @@
 
-package lab2practice;
+package com.mycompany.mavenproject6;
 
-import java.util.LinkedList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Font;
+import java.util.*;
 import javax.swing.*;
 
 public class Job extends JFrame implements ActionListener {
 
-    private JTextField txtInput;
-    private DefaultListModel<String> listModel;
-    private JList<String> listTask;
-    private JScrollPane scrollPane;
-    private JButton btnAdd, btnRemove, btnCompleted, btnClear, btnShow;
-    private LinkedList<String> linkedList;
+    private JLabel label;
+    private JTextField txt;
+    private JButton add, pick, show;
+    private JScrollPane scroll;
+    private JList<String> list;
+    private DefaultListModel<String> listmodel;
+    private Queue<String> queue;
+
+    private boolean isShowing = false;
 
     Job() {
-        // Dito binabago ang title ng application
-        setTitle("JOB MANAGEMENT GUI");
 
-        // Dito ina-adjust ang laki ng buong window
-        // setSize(width, height)
-        setSize(550, 500);
+        queue = new LinkedList<>();
+        listmodel = new DefaultListModel<>();
 
-        // Manual positioning ng mga components
+        setTitle("Job Management");
+        setSize(750, 480);
         setLayout(null);
-
-        // Para mag-close ang program kapag sinara ang window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // TEXT FIELD
-        txtInput = new JTextField();
+        label = new JLabel("Enter Job:");
+        label.setBounds(70, 35, 150, 30);
+        add(label);
 
-        // Dito ina-adjust ang position at size ng input field
-        // setBounds(x, y, width, height)
-        txtInput.setBounds(50, 50, 450, 30);
-        txtInput.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        add(txtInput);
+        txt = new JTextField();
+        txt.setBounds(240, 35, 350, 30);
+        add(txt);
 
-        // Frontend list model
-        // Dito naka-store ang mga job na nakikita sa GUI
-        listModel = new DefaultListModel<>();
+        add = new JButton("Add Job");
+        add.setBounds(540, 95, 140, 35);
+        add(add);
 
-        // Backend LinkedList
-        // Dito naka-store ang mga job sa LinkedList
-        linkedList = new LinkedList<>();
+        pick = new JButton("Process Job");
+        pick.setBounds(540, 155, 140, 35);
+        add(pick);
 
-        // JList
-        listTask = new JList<>(listModel);
-        listTask.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        listTask.setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION
-        );
+        show = new JButton("Show Queue");
+        show.setBounds(540, 215, 140, 35);
+        add(show);
 
-        // SCROLL PANE
-        scrollPane = new JScrollPane(listTask);
+        list = new JList<>(listmodel);
+        scroll = new JScrollPane(list);
+        scroll.setBounds(70, 265, 610, 150);
+        add(scroll);
 
-        // Dito ina-adjust ang position at size ng listahan
-        scrollPane.setBounds(50, 100, 450, 250);
-        add(scrollPane);
-
-        // setBounds(x, y, width, height)
-        //
-        // x      = pakanan o pakaliwa ang button
-        // y      = pataas o pababa ang button
-        // width  = lapad ng button
-        // height = taas ng button
-
-        // ADD BUTTON
-        btnAdd = new JButton("Add");
-        btnAdd.setBounds(50, 400, 85, 30);
-        add(btnAdd);
-
-        // SHOW BUTTON
-        btnShow = new JButton("Show");
-        btnShow.setBounds(141, 400, 85, 30);
-        add(btnShow);
-
-        // REMOVE BUTTON
-        btnRemove = new JButton("Remove");
-        btnRemove.setBounds(232, 400, 85, 30);
-        add(btnRemove);
-
-        // COMPLETED BUTTON
-        btnCompleted = new JButton("Completed");
-        btnCompleted.setBounds(323, 400, 95, 30);
-        add(btnCompleted);
-
-        // CLEAR BUTTON
-        btnClear = new JButton("Clear");
-        btnClear.setBounds(424, 400, 76, 30);
-        add(btnClear);
-
-        // ADD FUNCTION
-        // Kapag pinindot ang Add, mase-save ang job
-        btnAdd.addActionListener(this);
-
-        // SHOW FUNCTION
-        // Ipapakita ang mga naka-save na job
-        btnShow.addActionListener(this);
-
-        // REMOVE FUNCTION
-        // Tatanggalin ang napiling job
-        btnRemove.addActionListener(this);
-
-        // COMPLETED FUNCTION
-        // Lalagyan ng Completed ang napiling job
-        btnCompleted.addActionListener(this);
-
-        // CLEAR FUNCTION
-        // Buburahin ang lahat ng job
-        btnClear.addActionListener(this);
+        add.addActionListener(this);
+        pick.addActionListener(this);
+        show.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == btnAdd) {
-            String task = txtInput.getText().trim();
+        if (e.getSource() == add) {
 
-            // Hindi magdadagdag kapag walang text
-            if (!task.isEmpty()) {
+            String job = txt.getText().trim();
 
-                // Idadagdag sa backend LinkedList
-                linkedList.add(task);
+            if (!job.isEmpty()) {
 
-                // Hindi muna ipapakita sa GUI
-                // Show button lamang ang magpapakita
+                queue.add(job);
+                txt.setText("");
 
-                // Lilinisin ang input field
-                txtInput.setText("");
-
-            } else {
                 JOptionPane.showMessageDialog(
                     this,
-                    "Enter job first before adding",
-                    "Error Message",
+                    "Job added: " + job
+                );
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Enter Job First",
+                    "Error",
                     JOptionPane.ERROR_MESSAGE
                 );
             }
         }
 
-        // SHOW FUNCTION USING FOR-EACH
-        else if (e.getSource() == btnShow) {
+        else if (e.getSource() == pick) {
 
-            // Lilinisin muna para hindi madoble
-            listModel.clear();
+            if (!queue.isEmpty()) {
 
-            // FOR-EACH LOOP
-            // Ipapakita ang lahat ng naka-save na job
-            for (String task : linkedList) {
-                listModel.addElement(task);
-            }
-        }
+                String get = queue.poll();
 
-        else if (e.getSource() == btnRemove) {
-            int index = listTask.getSelectedIndex();
-
-            // Titingnan kung may napiling job
-            if (index != -1) {
-
-                // Tatanggalin sa backend LinkedList
-                linkedList.remove(index);
-
-                // Tatanggalin sa GUI listahan
-                listModel.remove(index);
-
-            } else {
                 JOptionPane.showMessageDialog(
                     this,
-                    "Select job first before removing",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE
+                    "Processing Job: " + get
                 );
-            }
-        }
 
-        else if (e.getSource() == btnCompleted) {
-            int index = listTask.getSelectedIndex();
+                if (isShowing) {
 
-            // Titingnan kung may napiling job
-            if (index != -1) {
-                String task = linkedList.get(index);
+                    listmodel.clear();
 
-                // Para hindi maulit ang Completed
-                if (!task.endsWith(" (Completed)")) {
-                    String completedTask = task + " (Completed)";
-
-                    // I-update ang backend LinkedList
-                    linkedList.set(index, completedTask);
-
-                    // I-update ang GUI listahan
-                    listModel.set(index, completedTask);
+                    for (String job : queue) {
+                        listmodel.addElement(job);
+                    }
                 }
 
-                listTask.clearSelection();
-
             } else {
+
                 JOptionPane.showMessageDialog(
                     this,
-                    "Please select a job first!",
-                    "No Job Selected",
-                    JOptionPane.WARNING_MESSAGE
+                    "No Job",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
                 );
             }
         }
 
-        else if (e.getSource() == btnClear) {
+        else if (e.getSource() == show) {
 
-            // Buburahin ang lahat sa backend LinkedList
-            linkedList.clear();
+            if (!isShowing) {
 
-            // Buburahin ang lahat sa GUI listahan
-            listModel.clear();
+                listmodel.clear();
+
+                for (String job : queue) {
+                    listmodel.addElement(job);
+                }
+
+                isShowing = true;
+                show.setText("Hide Queue");
+
+            } else {
+
+                listmodel.clear();
+                isShowing = false;
+                show.setText("Show Queue");
+            }
         }
     }
 
     public static void main(String[] args) {
 
-        // Dito magsisimula ang Java Swing application
         SwingUtilities.invokeLater(() -> {
             Job window = new Job();
-
-            // Ipapakita ang application window
             window.setLocationRelativeTo(null);
             window.setVisible(true);
         });
