@@ -1,0 +1,141 @@
+
+package com.mycompany.mavenproject6;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import javax.swing.*;
+
+public class Job extends JFrame implements ActionListener {
+
+    private JLabel label;
+    private JTextField txt;
+    private JButton add, pick, show;
+    private JScrollPane scroll;
+    private JList<String> list;
+    private DefaultListModel<String> listmodel;
+    private Queue<String> queue;
+
+    Job() {
+
+        queue = new LinkedList<>();
+        listmodel = new DefaultListModel<>();
+
+        setTitle("Job Management");
+        setSize(750, 480);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        label = new JLabel("Enter Job:");
+        label.setBounds(70, 35, 150, 30);
+        add(label);
+
+        txt = new JTextField();
+        txt.setBounds(240, 35, 350, 30);
+        add(txt);
+
+        add = new JButton("Add Job");
+        add.setBounds(540, 95, 140, 35);
+        add(add);
+
+        pick = new JButton("Process Job");
+        pick.setBounds(540, 155, 140, 35);
+        add(pick);
+
+        show = new JButton("Show Queue");
+        show.setBounds(540, 215, 140, 35);
+        add(show);
+
+        list = new JList<>(listmodel);
+        scroll = new JScrollPane(list);
+        scroll.setBounds(70, 265, 610, 150);
+        add(scroll);
+
+        add.addActionListener(this);
+        pick.addActionListener(this);
+        show.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == add) {
+
+            String job = txt.getText().trim();
+
+            if (!job.isEmpty()) {
+
+                queue.add(job);
+                txt.setText("");
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Job added: " + job
+                );
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Enter Job First",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+
+        else if (e.getSource() == pick) {
+
+            if (!queue.isEmpty()) {
+
+                String get = queue.poll();
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Processing Job " + get
+                );
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "No Job",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+
+        else if (e.getSource() == show) {
+
+            if (!queue.isEmpty()) {
+
+                listmodel.clear();
+
+                for (String job : queue) {
+                    listmodel.addElement(job);
+                }
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Empty Queue",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                listmodel.clear();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(() -> {
+            Job window = new Job();
+            window.setLocationRelativeTo(null);
+            window.setVisible(true);
+        });
+    }
+}
