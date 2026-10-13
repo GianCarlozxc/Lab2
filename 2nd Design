@@ -1,0 +1,233 @@
+
+package lab2practice;
+
+import java.util.LinkedList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Font;
+import java.awt.Dimension;
+import javax.swing.*;
+
+public class Mains extends JFrame implements ActionListener {
+
+    private JTextField txtInput;
+    private DefaultListModel<String> listModel;
+    private JList<String> listTask;
+    private JScrollPane scrollPane;
+    private JButton btnAdd, btnRemove, btnCompleted, btnClear;
+    private LinkedList<String> linkedList;
+
+    Mains() {
+        // Dito binabago ang title ng application
+        setTitle("LAB 2 ACT GUI");
+
+        // Dito ina-adjust ang laki ng buong window
+        setSize(600, 500);
+
+        // Manual positioning ng mga components
+        setLayout(null);
+
+        // Para mag-close ang program kapag sinara ang window
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // TEXT FIELD
+        txtInput = new JTextField();
+
+        // Dito ina-adjust ang position at size ng input field
+        // setBounds(x, y, width, height)
+        // Text field sa taas
+        txtInput.setBounds(40, 40, 510, 35);
+        txtInput.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        add(txtInput);
+
+        // Frontend list model
+        // Dito naka-store ang mga task na nakikita sa GUI
+        listModel = new DefaultListModel<>();
+
+        // Backend LinkedList
+        // Dito naka-store ang mga task sa LinkedList
+        linkedList = new LinkedList<>();
+
+        // JList
+        listTask = new JList<>(listModel);
+        listTask.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        listTask.setSelectionMode(
+            ListSelectionModel.SINGLE_SELECTION
+        );
+
+        // SCROLL PANE
+        scrollPane = new JScrollPane(listTask);
+
+        // Task list sa kaliwang side
+        scrollPane.setBounds(40, 100, 350, 310);
+        add(scrollPane);
+
+        // setBounds(x, y, width, height)
+        //
+        // x      = pakanan o pakaliwa
+        // y      = pataas o pababa
+        // width  = lapad ng component
+        // height = taas ng component
+        //
+        // Mas mataas na x = mas pakanan
+        // Mas mababang x = mas pakaliwa
+        // Mas mataas na y = mas pababa
+        // Mas mababang y = mas pataas
+
+        // ADD BUTTON
+        btnAdd = new JButton("Add");
+
+        // Button sa kanang side - first
+        btnAdd.setBounds(420, 100, 130, 45);
+        add(btnAdd);
+
+        // REMOVE BUTTON
+        btnRemove = new JButton("Remove");
+
+        // Button sa kanang side - second
+        btnRemove.setBounds(420, 165, 130, 45);
+        add(btnRemove);
+
+        // COMPLETED BUTTON
+        btnCompleted = new JButton("Completed");
+
+        // Button sa kanang side - third
+        btnCompleted.setBounds(420, 230, 130, 45);
+        add(btnCompleted);
+
+        // CLEAR BUTTON
+        btnClear = new JButton("Clear");
+
+        // Button sa kanang side - fourth
+        btnClear.setBounds(420, 295, 130, 45);
+        add(btnClear);
+
+        // ADD FUNCTION
+        // Kapag pinindot ang Add, madadagdag ang task sa listahan
+        btnAdd.addActionListener(this);
+
+        // REMOVE FUNCTION
+        // Tatanggalin ang napiling task sa listahan
+        btnRemove.addActionListener(this);
+
+        // COMPLETED FUNCTION
+        // Lalagyan ng (Completed) ang napiling task
+        btnCompleted.addActionListener(this);
+
+        // CLEAR FUNCTION
+        // Buburahin ang lahat ng task sa listahan
+        btnClear.addActionListener(this);
+
+        // Siguraduhin na kasya lahat ng components
+        getContentPane().setPreferredSize(
+            new Dimension(600, 460)
+        );
+
+        pack();
+
+        // Hindi na mababago ang laki ng window
+        setResizable(false);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == btnAdd) {
+            String task = txtInput.getText().trim();
+
+            // Hindi magdadagdag kapag walang nakalagay na text
+            if (!task.isEmpty()) {
+
+                // Idadagdag ang task sa backend LinkedList
+                linkedList.add(task);
+
+                // Ipapakita ang task sa GUI listahan
+                listModel.addElement(task);
+
+                // Lilinisin ang input field pagkatapos mag-add
+                txtInput.setText("");
+
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Enter task first before adding",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+
+        else if (e.getSource() == btnRemove) {
+            int index = listTask.getSelectedIndex();
+
+            // Titingnan kung may napiling task
+            if (index != -1) {
+
+                // Tatanggalin sa backend LinkedList
+                linkedList.remove(index);
+
+                // Tatanggalin din sa GUI listahan
+                listModel.remove(index);
+
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Select task first before removing",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+
+        else if (e.getSource() == btnCompleted) {
+            int index = listTask.getSelectedIndex();
+
+            // Titingnan kung may napiling task
+            if (index != -1) {
+                String task = linkedList.get(index);
+
+                // Para hindi maulit ang (Completed) sa task
+                if (!task.endsWith(" (Completed)")) {
+                    String completedTask = task + " (Completed)";
+
+                    // I-update ang task sa backend LinkedList
+                    linkedList.set(index, completedTask);
+
+                    // I-update ang task sa GUI listahan
+                    listModel.set(index, completedTask);
+                }
+
+                listTask.clearSelection();
+
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Please select a task first!",
+                    "No Task Selected",
+                    JOptionPane.WARNING_MESSAGE
+                );
+            }
+        }
+
+        else if (e.getSource() == btnClear) {
+
+            // Buburahin ang lahat sa backend LinkedList
+            linkedList.clear();
+
+            // Buburahin ang lahat sa GUI listahan
+            listModel.clear();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        // Dito magsisimula ang Java Swing application
+        SwingUtilities.invokeLater(() -> {
+            Mains window = new Mains();
+
+            // Ipapakita ang application window
+            window.setLocationRelativeTo(null);
+            window.setVisible(true);
+        });
+    }
+}
