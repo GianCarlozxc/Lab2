@@ -2,9 +2,11 @@
 package lab2practice;
 
 import java.util.LinkedList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Main extends JFrame {
+public class Main extends JFrame implements ActionListener {
 
     private JTextField txtInput;
     private DefaultListModel<String> listModel;
@@ -96,7 +98,25 @@ public class Main extends JFrame {
 
         // ADD FUNCTION
         // Kapag pinindot ang Add, madadagdag ang task sa listahan
-        btnAdd.addActionListener(e -> {
+        btnAdd.addActionListener(this);
+
+        // REMOVE FUNCTION
+        // Tatanggalin ang napiling task sa listahan
+        btnRemove.addActionListener(this);
+
+        // COMPLETED FUNCTION
+        // Lalagyan ng [Completed] ang napiling task
+        btnCompleted.addActionListener(this);
+
+        // CLEAR FUNCTION
+        // Buburahin ang lahat ng task sa listahan
+        btnClear.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == btnAdd) {
             String task = txtInput.getText().trim();
 
             // Hindi magdadagdag kapag walang nakalagay na text
@@ -111,11 +131,9 @@ public class Main extends JFrame {
                 // Lilinisin ang input field pagkatapos mag-add
                 txtInput.setText("");
             }
-        });
+        }
 
-        // REMOVE FUNCTION
-        // Tatanggalin ang napiling task sa listahan
-        btnRemove.addActionListener(e -> {
+        else if (e.getSource() == btnRemove) {
             int index = listTask.getSelectedIndex();
 
             // Titingnan kung may napiling task
@@ -127,11 +145,9 @@ public class Main extends JFrame {
                 // Tatanggalin din sa GUI listahan
                 listModel.remove(index);
             }
-        });
+        }
 
-        // COMPLETED FUNCTION
-        // Lalagyan ng [Completed] ang napiling task
-        btnCompleted.addActionListener(e -> {
+        else if (e.getSource() == btnCompleted) {
             int index = listTask.getSelectedIndex();
 
             // Titingnan kung may napiling task
@@ -156,18 +172,16 @@ public class Main extends JFrame {
                     JOptionPane.WARNING_MESSAGE
                 );
             }
-        });
+        }
 
-        // CLEAR FUNCTION
-        // Buburahin ang lahat ng task sa listahan
-        btnClear.addActionListener(e -> {
+        else if (e.getSource() == btnClear) {
 
             // Buburahin ang lahat sa backend LinkedList
             linkedList.clear();
 
             // Buburahin ang lahat sa GUI listahan
             listModel.clear();
-        });
+        }
     }
 
     public static void main(String[] args) {
