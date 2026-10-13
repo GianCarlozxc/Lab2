@@ -1,231 +1,110 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
 
-package lab2practice;
+package com.mycompany.mavenproject6;
 
-import java.util.LinkedList;
+/**
+ *
+ * @author 
+ */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Font;
+import java.util.*;
 import javax.swing.*;
 
-public class Customer extends JFrame implements ActionListener {
 
-    private JTextField txtInput;
-    private DefaultListModel<String> listModel;
-    private JList<String> listTask;
-    private JScrollPane scrollPane;
-    private JButton btnAdd, btnRemove, btnCompleted, btnClear, btnShow;
-    private LinkedList<String> linkedList;
-
-    Customer() {
-        // Dito binabago ang title ng application
-        setTitle("CUSTOMER MANAGEMENT GUI");
-
-        // Dito ina-adjust ang laki ng buong window
-        // setSize(width, height)
-        setSize(550, 500);
-
-        // Manual positioning ng mga components
-        setLayout(null);
-
-        // Para mag-close ang program kapag sinara ang window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // TEXT FIELD
-        txtInput = new JTextField();
-
-        // Dito ina-adjust ang position at size ng input field
-        // setBounds(x, y, width, height)
-        txtInput.setBounds(50, 50, 450, 30);
-        txtInput.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        add(txtInput);
-
-        // Frontend list model
-        // Dito naka-store ang mga customer na nakikita sa GUI
-        listModel = new DefaultListModel<>();
-
-        // Backend LinkedList
-        // Dito naka-store ang mga customer
-        linkedList = new LinkedList<>();
-
-        // JList
-        listTask = new JList<>(listModel);
-        listTask.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        listTask.setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION
-        );
-
-        // SCROLL PANE
-        scrollPane = new JScrollPane(listTask);
-
-        // Dito ina-adjust ang position at size ng listahan
-        scrollPane.setBounds(50, 100, 450, 250);
-        add(scrollPane);
-
-        // setBounds(x, y, width, height)
-        //
-        // x      = pakanan o pakaliwa ang button
-        // y      = pataas o pababa ang button
-        // width  = lapad ng button
-        // height = taas ng button
-
-        // ADD BUTTON
-        btnAdd = new JButton("Add");
-        btnAdd.setBounds(50, 400, 85, 30);
-        add(btnAdd);
-
-        // SHOW BUTTON
-        btnShow = new JButton("Show");
-        btnShow.setBounds(141, 400, 85, 30);
-        add(btnShow);
-
-        // REMOVE BUTTON
-        btnRemove = new JButton("Remove");
-        btnRemove.setBounds(232, 400, 85, 30);
-        add(btnRemove);
-
-        // COMPLETED BUTTON
-        btnCompleted = new JButton("Completed");
-        btnCompleted.setBounds(323, 400, 95, 30);
-        add(btnCompleted);
-
-        // CLEAR BUTTON
-        btnClear = new JButton("Clear");
-        btnClear.setBounds(424, 400, 76, 30);
-        add(btnClear);
-
-        // ADD FUNCTION
-        // Kapag pinindot ang Add, mase-save ang customer
-        btnAdd.addActionListener(this);
-
-        // SHOW FUNCTION
-        // Ipapakita ang mga naka-save na customer
-        btnShow.addActionListener(this);
-
-        // REMOVE FUNCTION
-        // Tatanggalin ang napiling customer
-        btnRemove.addActionListener(this);
-
-        // COMPLETED FUNCTION
-        // Lalagyan ng Completed ang customer
-        btnCompleted.addActionListener(this);
-
-        // CLEAR FUNCTION
-        // Buburahin ang lahat ng customer
-        btnClear.addActionListener(this);
-    }
+public class Mavenproject6 extends JFrame implements ActionListener{
+    
+    private JLabel label;
+    private JTextField txt;
+    private JButton add, pick, show;
+    private JScrollPane scroll;
+    private JList<String> list;
+    private DefaultListModel<String> listmodel;
+    private Queue<String> queue;
+    
+Mavenproject6(){
+    
+    queue = new LinkedList<>();
+    listmodel = new DefaultListModel<>();
+    
+    setTitle("Customer Service");
+    setSize(600, 300);
+    setLayout(null);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    label = new JLabel("Enter Customer Name");
+    label.setBounds(50, 30, 150, 30);
+    add(label);
+    
+    txt = new JTextField();
+    txt.setBounds(225, 30, 300, 30);
+    add(txt);
+    
+    add = new JButton("Add Customer");
+    add.setBounds(50, 70, 150, 25);
+    add(add);
+    
+    pick = new JButton("Serve Custome");
+    pick.setBounds(50, 120, 150, 25);
+    add(pick);
+    
+    show = new JButton("Show Queue");
+    show.setBounds(50, 170, 150, 25);
+    add(show);
+    
+    list = new JList<>(listmodel);
+    scroll = new JScrollPane(list);
+    scroll.setBounds(225, 70, 300, 150);
+    add(scroll);
+            
+    add.addActionListener(this);
+    pick.addActionListener(this);
+    show.addActionListener(this);
+            
+           
+}
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        if (e.getSource() == btnAdd) {
-            String task = txtInput.getText().trim();
-
-            // Hindi magdadagdag kapag walang text
-            if (!task.isEmpty()) {
-
-                // Idadagdag sa backend LinkedList
-                linkedList.add(task);
-
-                // Hindi muna ipapakita sa GUI
-                // Show button lamang ang magpapakita
-
-                // Lilinisin ang input field
-                txtInput.setText("");
-
-            } else {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Enter customer first before adding",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE
-                );
+        if(e.getSource() == add){
+            String name = txt.getText();
+        
+            if(!name.isEmpty()){
+                queue.add(name);
+                txt.setText("");
+                JOptionPane.showMessageDialog(this, "Customer name is "+name);
             }
-        }
-
-        // SHOW FUNCTION USING FOR-EACH
-        else if (e.getSource() == btnShow) {
-
-            // Lilinisin muna para hindi madoble
-            listModel.clear();
-
-            // FOR-EACH LOOP
-            // Ipapakita ang lahat ng customer
-            for (String task : linkedList) {
-                listModel.addElement(task);
+            else{
+                JOptionPane.showMessageDialog(this, "Enter Custome Name", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-
-        else if (e.getSource() == btnRemove) {
-            int index = listTask.getSelectedIndex();
-
-            // Titingnan kung may napiling customer
-            if (index != -1) {
-
-                // Tatanggalin sa backend LinkedList
-                linkedList.remove(index);
-
-                // Tatanggalin sa GUI listahan
-                listModel.remove(index);
-
-            } else {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Select customer first before removing",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-
-        else if (e.getSource() == btnCompleted) {
-            int index = listTask.getSelectedIndex();
-
-            // Titingnan kung may napiling customer
-            if (index != -1) {
-                String task = linkedList.get(index);
-
-                // Para hindi maulit ang Completed
-                if (!task.endsWith(" (Completed)")) {
-                    String completedTask = task + " (Completed)";
-
-                    // I-update ang backend LinkedList
-                    linkedList.set(index, completedTask);
-
-                    // I-update ang GUI listahan
-                    listModel.set(index, completedTask);
-                }
-
-                listTask.clearSelection();
-
-            } else {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a customer first!",
-                    "No Customer Selected",
-                    JOptionPane.WARNING_MESSAGE
-                );
-            }
-        }
-
-        else if (e.getSource() == btnClear) {
-
-            // Buburahin ang lahat sa backend LinkedList
-            linkedList.clear();
-
-            // Buburahin ang lahat sa GUI listahan
-            listModel.clear();
-        }
     }
+        else if(e.getSource() == pick){
+          if(!queue.isEmpty()){
+              String get = queue.poll();
+              JOptionPane.showMessageDialog(this, "Serving Customer " +get);
+          }
+          else{
+              JOptionPane.showMessageDialog(this, "No Customer", "Error", JOptionPane.ERROR_MESSAGE);
+              
+          }
+        }
+        else if(e.getSource() == show){
+            if(!queue.isEmpty()){
+            listmodel.clear();
+            for(String name: queue){
+                listmodel.addElement(name); 
+            }
+        }
+            else{
+                    JOptionPane.showMessageDialog(this, "Empty Queue", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    listmodel.clear();
+                    }
+            
+        }
+            
+        }
 
-    public static void main(String[] args) {
-
-        // Dito magsisimula ang Java Swing application
-        SwingUtilities.invokeLater(() -> {
-            Customer window = new Customer();
-
-            // Ipapakita ang application window
-            window.setLocationRelativeTo(null);
-            window.setVisible(true);
-        });
+   
     }
-}
